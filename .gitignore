@@ -1,0 +1,20 @@
+# Python
+__pycache__/
+*.py[cod]
+*.sqlite3
+*.log
+
+# Virtual environment
+venv/
+env/
+
+# Django secret key or settings
+*.env
+
+# VS Code, JetBrains, etc.
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
