@@ -8,7 +8,15 @@ def get_students(request):
     
     if request.GET.get('search'):
         search=request.GET.get('search')
-        querySet=querySet.filter(name__icontains=search)
+        querySet=querySet.filter(
+            Q(name__icontains=search) |
+            Q(department__department__icontains=search) |
+            Q(student_id__student_id__icontains=search) |
+            Q(age__icontains=search) |
+            Q(email__icontains=search) |
+            Q(address__icontains=search)
+        )
+        
     
     paginator=Paginator(querySet,6)
     page_number=request.GET.get("page",1)

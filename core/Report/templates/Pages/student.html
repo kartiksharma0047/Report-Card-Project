@@ -87,11 +87,11 @@
 
   td.address span.show-more-btn {
     display: inline;
-    margin-left: 6px;
+    font-size: 12px;
     font-weight: 500;
     white-space: nowrap;
     cursor: pointer;
-    color: skyblue;
+    color: #0a58cf;
   }
 
   td.address {
@@ -167,18 +167,45 @@
     font-weight: 500;
     color: #333;
   }
+  .search-form .search-wrapper {
+    display: flex;
+    width: 100%;
+    gap: 12px;
+  }
+
+  .search-form .search-input {
+    flex: 1;
+    padding: 0.5rem;
+    border-radius: 6px;
+    border: 1px solid #ced4da;
+    font-size: 1rem;
+  }
+
+  .search-form .button-group {
+    display: flex;
+    gap: 8px;
+  }
+
+  .search-form .btn {
+    white-space: nowrap;
+  }
 </style>
 
 <div class="container">
   {% csrf_token %}
   <div class="table-container">
-    <form action="" class="mb-4">
-      <div class="row">
-        <div class="col-md-6">
-          <input type="form-control" name="search" placeholder="Search" />
-        </div>
-        <div class="col-md-6">
-          <button class="btn btn-success">Search</button>
+    <form action="" method="get" class="search-form mb-4">
+      <div class="search-wrapper">
+        <input
+          type="text"
+          name="search"
+          class="form-control search-input"
+          placeholder="Search"
+          value="{{ request.GET.search }}"
+        />
+        <div class="button-group">
+          <button type="submit" class="btn btn-success">Search</button>
+          <a href="{% url 'get_students' %}" class="btn btn-secondary">Reset</a>
         </div>
       </div>
     </form>
@@ -227,8 +254,14 @@
     <div class="pagination">
       <span class="step-links">
         {% if Data.has_previous %}
-        <a href="?page=1">&laquo; First</a>
-        <a href="?page={{ Data.previous_page_number }}">Previous</a>
+        <a
+          href="?page=1{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}"
+          >&laquo; First</a
+        >
+        <a
+          href="?page={{ Data.previous_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}"
+          >Previous</a
+        >
         {% else %}
         <span class="disabled">&laquo; First</span>
         <span class="disabled">Previous</span>
@@ -239,8 +272,14 @@
         </span>
 
         {% if Data.has_next %}
-        <a href="?page={{ Data.next_page_number }}">Next</a>
-        <a href="?page={{ Data.paginator.num_pages }}">Last &raquo;</a>
+        <a
+          href="?page={{ Data.next_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}"
+          >Next</a
+        >
+        <a
+          href="?page={{ Data.paginator.num_pages }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}"
+          >Last &raquo;</a
+        >
         {% else %}
         <span class="disabled">Next</span>
         <span class="disabled">Last &raquo;</span>
