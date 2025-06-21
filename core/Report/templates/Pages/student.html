@@ -226,7 +226,7 @@
           {% if Data %} {% for student in Data %}
           <tr>
             <td>{{ forloop.counter }}</td>
-            <td><a href="#" class="id-link">{{ student.student_id }}</a></td>
+            <td><a href="{% url 'showResult' student.student_id %}" class="id-link">{{ student.student_id }}</a></td>
             <td class="text">{{ student.name }}</td>
             <td class="text">{{ student.email }}</td>
             <td class="number">{{ student.age }}</td>

@@ -20,5 +20,6 @@ from Report.views import *
 
 urlpatterns = [
     path('',get_students,name="get_students"),
+    path('/result/<student_id>',showResult,name="showResult"),
     path('admin/', admin.site.urls),
 ]
