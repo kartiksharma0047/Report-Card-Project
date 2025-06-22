@@ -1,5 +1,4 @@
-{% extends "base.html" %}
-{% block start %}
+{% extends "base.html" %} {% block start %}
 
 <style>
   .result-container {
@@ -70,13 +69,28 @@
   .total-marks {
     text-align: right;
     margin-top: 0rem;
-    font-weight: 600;
-    font-size: 1.1rem;
     color: #212529;
     background-color: #f1f3f5;
-    padding: 0.5rem;
-    padding-right: 4rem;
+    padding: 0.5rem 4rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     border-radius: 0 0 12px 12px;
+  }
+  .total-marks p {
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin: 0;
+    padding: 0;
+  }
+  .footer-DOG{
+    margin: 0;
+    padding: 0;
+  }
+  .footer-DOG p{
+    margin: 0;
+    padding: 10px 0 0 0;
+    font-size: 12px;
   }
 
   @media screen and (max-width: 768px) {
@@ -95,9 +109,13 @@
   <div class="info-header">
     <div class="info-box">
       <h5>Student Details</h5>
-      <p><strong>Student ID:</strong> {{ Data.0.student.student_id.student_id }}</p>
+      <p>
+        <strong>Student ID:</strong> {{ Data.0.student.student_id.student_id }}
+      </p>
       <p><strong>Name:</strong> {{ Data.0.student.name }}</p>
-      <p><strong>Department:</strong> {{ Data.0.student.department.department }}</p>
+      <p>
+        <strong>Department:</strong> {{ Data.0.student.department.department }}
+      </p>
     </div>
     <div class="info-box">
       <h5>General Info</h5>
@@ -128,8 +146,13 @@
     </table>
   </div>
 
-  <div class="total-marks">Total Marks: {{ total_marks.total_marks }}</div>
-
+  <div class="total-marks">
+    <p>Rank: {{Data.first.student.studentreportcard.first.student_rank}}</p>
+    <p>Total Marks: {{ total_marks.total_marks }}</p>
+  </div>
+  <div class="footer-DOG">
+    <p>Date of generation: <i>{{Data.first.student.studentreportcard.first.date_report_generation}}</i></p>
+  </div>
   {% else %}
   <div class="alert alert-warning text-center">
     No result data found for this student.

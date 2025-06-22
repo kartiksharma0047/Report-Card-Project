@@ -25,7 +25,10 @@ def get_students(request):
     return render(request, './Pages/student.html', context={'Data': page_obj})
 
 # Here Details of a user
+from .seed import generate_report_card
 def showResult(request,student_id):
+    # Don't use this function use it once you have to seed the report card data
+    # generate_report_card()
     querySet= SubjectMarks.objects.filter(student__student_id__student_id=student_id)
     total_marks = querySet.aggregate(total_marks=Sum('marks'))
     return render(request,"./Pages/student_Result.html",context={"Data":querySet,"total_marks":total_marks})
