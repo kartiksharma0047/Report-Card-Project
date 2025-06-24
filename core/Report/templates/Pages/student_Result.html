@@ -129,9 +129,10 @@
     <table>
       <thead>
         <tr>
-          <th style="width: 10%">#</th>
+          <th style="width: 10%">ID</th>
           <th>Subject</th>
           <th style="width: 25%">Marks</th>
+          <th style="width: 10%;">Result</th>
         </tr>
       </thead>
       <tbody>
@@ -140,6 +141,13 @@
           <td>{{ forloop.counter }}</td>
           <td>{{ item.subject.subject_name }}</td>
           <td>{{ item.marks }}</td>
+          <td>
+            {% if item.marks >= 33 %}
+            <span class="text-success">Pass</span>
+            {% else %}
+            <span class="text-danger">Fail</span>
+            {% endif %}
+          </td>
         </tr>
         {% endfor %}
       </tbody>

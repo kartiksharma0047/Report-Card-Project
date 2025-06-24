@@ -6,10 +6,10 @@ __pycache__/
 
 # Virtual environment
 venv/
-env/
+/Report Card Django/core/.env
 
 # Django secret key or settings
-*.env
+ 
 
 # VS Code, JetBrains, etc.
 .vscode/

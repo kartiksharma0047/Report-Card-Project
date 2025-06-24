@@ -5,11 +5,13 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-direction: column;
+    width: 100vw;
+    padding: 0;
   }
 
   .table-container {
-    width: 90%;
+    width: 100%;
+    margin-right: 40px;
     padding: 2rem 2rem 1rem 2rem;
     background-color: #ffffff;
     border-radius: 12px;
@@ -66,6 +68,7 @@
     background-color: #ffffff;
     position: sticky;
     top: 0;
+    color: #495057 !important;
     z-index: 1;
   }
 
@@ -106,11 +109,11 @@
   }
   th:nth-child(2),
   td:nth-child(2) {
-    width: 10%;
+    width: 9%;
   }
   th:nth-child(3),
   td:nth-child(3) {
-    width: 15%;
+    width: 10%;
   }
   th:nth-child(4),
   td:nth-child(4) {
@@ -118,7 +121,7 @@
   }
   th:nth-child(5),
   td:nth-child(5) {
-    width: 7%;
+    width: 5%;
     text-align: right;
   }
   th:nth-child(6),
@@ -127,7 +130,11 @@
   }
   th:nth-child(7),
   td:nth-child(7) {
-    width: 15%;
+    width: 12%;
+  }
+  th:nth-child(8),
+  td:nth-child(8) {
+    width: 9%;
   }
 
   /* 🔽 Pagination Styling */
@@ -189,12 +196,60 @@
   .search-form .btn {
     white-space: nowrap;
   }
+
+  .sorting-container {
+    width: 15%;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.08);
+  }
+
+  .sorting-container h5 {
+    margin-bottom: 1.4rem;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #495057;
+  }
+
+  .sorting-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+  }
+
+  .sorting-buttons a {
+    display: block;
+    padding: 8px 12px;
+    text-align: center;
+    background-color: #f4f4f4;
+    border-radius: 6px;
+    color: black;
+    font-size: 0.95rem;
+    text-decoration: none;
+  }
+
+  .sorting-buttons a:hover {
+    background-color: #5c5c5c;
+    color: white;
+    cursor: pointer;
+  }
+  .sorting-buttons a.active-sort {
+    background-color: #04aa6d;
+    color: white;
+    font-weight: bold;
+  }
 </style>
 
 <div class="container">
   {% csrf_token %}
   <div class="table-container">
     <form action="" method="get" class="search-form mb-4">
+      <input type="hidden" name="sort" value="{{ request.GET.sort }}" />
       <div class="search-wrapper">
         <input
           type="text"
@@ -209,24 +264,60 @@
         </div>
       </div>
     </form>
+
     <div class="table-responsive">
       <table class="table">
         <thead>
           <tr>
             <th>S No.</th>
-            <th>Id</th>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Age</th>
-            <th>Address</th>
-            <th>Department</th>
+            <th
+              style="background-color:{% if request.GET.sort == 'student_id' %}#ebebeb {% else %}white{% endif %}"
+            >
+              Id
+            </th>
+            <th
+              style="background-color:{% if request.GET.sort == 'name' %}#ebebeb {% else %}white{% endif %}"
+            >
+              Name
+            </th>
+            <th
+              style="background-color:{% if request.GET.sort == 'email' %}#ebebeb {% else %}white{% endif %}"
+            >
+              Email
+            </th>
+            <th
+              style="background-color:{% if request.GET.sort == 'age' %}#ebebeb {% else %}white{% endif %}"
+            >
+              Age
+            </th>
+            <th
+              style="background-color:{% if request.GET.sort == 'address' %}#ebebeb {% else %}white{% endif %}"
+            >
+              Address
+            </th>
+            <th
+              style="background-color:{% if request.GET.sort == 'department' %}#ebebeb {% else %}white{% endif %}"
+            >
+              Department
+            </th>
+            <th
+              style="background-color:{% if request.GET.sort == 'rank' %}#ebebeb {% else %}white{% endif %}"
+            >
+              Rank
+            </th>
           </tr>
         </thead>
         <tbody>
           {% if Data %} {% for student in Data %}
           <tr>
             <td>{{ forloop.counter }}</td>
-            <td><a href="{% url 'showResult' student.student_id %}" class="id-link">{{ student.student_id }}</a></td>
+            <td>
+              <a
+                href="{% url 'showResult' student.student_id %}"
+                class="id-link"
+                >{{ student.student_id }}</a
+              >
+            </td>
             <td class="text">{{ student.name }}</td>
             <td class="text">{{ student.email }}</td>
             <td class="number">{{ student.age }}</td>
@@ -242,6 +333,11 @@
               {% else %} {{ student.address }} {% endif %}
             </td>
             <td class="text">{{ student.department.department }}</td>
+            <td class="rank">
+              {% if student.studentreportcard.all %} Rank
+              {{student.studentreportcard.all.0.student_rank }} {% else %} N/A
+              {%endif %}
+            </td>
           </tr>
           {% endfor %} {% else %}
           <tr>
@@ -255,11 +351,11 @@
       <span class="step-links">
         {% if Data.has_previous %}
         <a
-          href="?page=1{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}"
+          href="?page=1{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}"
           >&laquo; First</a
         >
         <a
-          href="?page={{ Data.previous_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}"
+          href="?page={{ Data.previous_page_number }}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}"
           >Previous</a
         >
         {% else %}
@@ -273,11 +369,11 @@
 
         {% if Data.has_next %}
         <a
-          href="?page={{ Data.next_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}"
+          href="?page={{ Data.next_page_number }}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}"
           >Next</a
         >
         <a
-          href="?page={{ Data.paginator.num_pages }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}"
+          href="?page={{ Data.paginator.num_pages }}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}"
           >Last &raquo;</a
         >
         {% else %}
@@ -285,6 +381,59 @@
         <span class="disabled">Last &raquo;</span>
         {% endif %}
       </span>
+    </div>
+  </div>
+  <div class="sorting-container">
+    <h5>Sort by</h5>
+    <div class="sorting-buttons">
+      <a
+        href="?sort=student_id{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}"
+        class="{% if request.GET.sort == 'student_id' %}active-sort{% endif %}"
+      >
+        Student ID
+      </a>
+
+      <a
+        href="?sort=name{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}"
+        class="{% if request.GET.sort == 'name' or not request.GET.sort %}active-sort{% endif %}"
+      >
+        Name
+      </a>
+
+      <a
+        href="?sort=email{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}"
+        class="{% if request.GET.sort == 'email' %}active-sort{% endif %}"
+      >
+        Email
+      </a>
+
+      <a
+        href="?sort=age{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}"
+        class="{% if request.GET.sort == 'age' %}active-sort{% endif %}"
+      >
+        Age
+      </a>
+
+      <a
+        href="?sort=address{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}"
+        class="{% if request.GET.sort == 'address' %}active-sort{% endif %}"
+      >
+        Address
+      </a>
+
+      <a
+        href="?sort=department{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}"
+        class="{% if request.GET.sort == 'department' %}active-sort{% endif %}"
+      >
+        Department
+      </a>
+
+      <a
+        href="?sort=rank{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}"
+        class="{% if request.GET.sort == 'rank' %}active-sort{% endif %}"
+      >
+        Rank
+      </a>
     </div>
   </div>
 </div>
