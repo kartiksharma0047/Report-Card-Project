@@ -1,171 +1,363 @@
-{% extends "base.html" %} {% block start %}
-
+{% extends "base.html" %}
+{% block start %}
 <style>
-  .result-container {
-    width: 80%;
-    margin: 2rem auto;
-    background-color: #fff;
-    border-radius: 16px;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
-    padding: 2rem;
+  .student-result-result {
+    width: 100%;
   }
 
-  .info-header {
+  .student-result-result h1 {
+    font-size: 2.5rem;
+    color: #343a40;
+    margin-bottom: 5rem;
+    text-align: center;
+  }
+
+  .student-result-result-box {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+  }
+
+  .student-result-box-actions {
+    width: 300px;
+    background-color: white;
+    padding: 1rem;
+    border-radius: 12px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.251);
+    height: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+  }
+
+  .student-result-box-actions button {
+    width: 100%;
+    margin-top: 1rem;
+  }
+
+  #smallReportCard {
+    font-size: 0.6rem;
+    width: 600px;
+    background-color: white !important;
+  }
+
+  #smallReportCard .student-result-result-container {
+    padding: 1rem;
+  }
+
+  #smallReportCard .student-result-info-header .student-result-info-box p {
+    margin: 0;
+  }
+
+  #smallReportCard .student-result-marks-table thead tr {
+    background-color: #e9f5ff;
+  }
+
+  #smallReportCard .student-result-marks-table td,
+  #smallReportCard .student-result-marks-table th {
+    padding: 0.1rem;
+  }
+
+  #smallReportCard .student-result-marks-table {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+  }
+
+  #smallReportCard .student-result-total-marks,
+  #smallReportCard .student-result-footer-DOG,
+  #smallReportCard .student-result-total-marks p,
+  #smallReportCard .student-result-footer-DOG p {
+    margin: 0;
+  }
+
+  #fullReportCard {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 9999;
+    width: 100vw;
+    height: 100vh;
+    overflow-y: hidden;
+    background: #fffbe9;
+    padding: 2rem;
+    display: none;
+  }
+
+  #fullReportCard.show {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+
+  #fullReportCard .student-result-result-container {
+    font-size: 1rem;
+    padding: 2rem;
+    width: 100%;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+    transform: scale(0.7);
+  }
+
+  .student-result-info-header {
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
     margin-bottom: 1rem;
   }
 
-  .info-box {
-    width: 40%;
+  .student-result-info-box {
+    width: 48%;
   }
 
-  .info-box h5 {
-    font-size: 1.2rem;
-    color: #495057;
-    margin-bottom: 0.8rem;
+  .student-result-info-box h5 {
+    font-size: 1.2em;
+    margin-bottom: 0.5em;
     border-bottom: 2px solid #dee2e6;
-    padding-bottom: 0.4rem;
   }
 
-  .info-box p {
-    margin: 0.3rem 0;
-    font-size: 0.95rem;
-    color: #555;
+  #fullReportCard .student-result-result-container .student-result-info-box {
+    width: 45%;
   }
 
-  .marks-table {
-    margin-top: 1rem;
-    border-radius: 12px;
-    overflow: hidden;
+  #fullReportCard .student-result-result-container .student-result-info-box h5 {
+    font-size: 1.5rem;
+    padding-bottom: 0.5em;
+    margin-bottom: 0.5em;
+    border-bottom: 2px solid #dee2e6;
   }
 
-  table {
+  #fullReportCard .student-result-result-container .student-result-info-box p {
+    margin: 0.2rem 0;
+    font-size: 1.2rem;
+  }
+
+  .student-result-marks-table table {
     width: 100%;
     border-collapse: collapse;
   }
 
-  thead {
+  .student-result-marks-table th,
+  .student-result-marks-table td {
+    border: 1px solid #dee2e6;
+    padding: 0.5rem;
+    text-align: left;
+  }
+
+  #fullReportCard .student-result-result-container .student-result-marks-table thead tr {
     background-color: #e9f5ff;
   }
 
-  thead th {
-    padding: 0.75rem;
-    text-align: left;
-    font-weight: 600;
-    color: #333;
-    border-bottom: 2px solid #dee2e6;
+  #fullReportCard .student-result-result-container .student-result-marks-table th,
+  #fullReportCard .student-result-result-container .student-result-marks-table td {
+    font-size: 1.4rem;
   }
 
-  tbody td {
-    padding: 0.45rem 0.75rem;
-    border: 1px solid #e0e0e0;
-    font-size: 0.95rem;
-    background-color: white;
-    color: #444;
-  }
-
-  .total-marks {
-    text-align: right;
-    margin-top: 0rem;
-    color: #212529;
-    background-color: #f1f3f5;
-    padding: 0.5rem 4rem;
+  .student-result-total-marks,
+  .student-result-footer-DOG {
+    margin-top: 1rem;
     display: flex;
-    align-items: center;
     justify-content: space-between;
-    border-radius: 0 0 12px 12px;
-  }
-  .total-marks p {
-    font-weight: 600;
-    font-size: 1.1rem;
-    margin: 0;
-    padding: 0;
-  }
-  .footer-DOG{
-    margin: 0;
-    padding: 0;
-  }
-  .footer-DOG p{
-    margin: 0;
-    padding: 10px 0 0 0;
-    font-size: 12px;
+    padding: 0 1rem;
   }
 
-  @media screen and (max-width: 768px) {
-    .info-box {
-      width: 100%;
-      margin-bottom: 1rem;
-    }
-    .total-marks {
-      text-align: center;
-    }
+  #fullReportCard .student-result-result-container .student-result-total-marks,
+  #fullReportCard .student-result-result-container .student-result-footer-DOG {
+    font-size: 1.3rem;
+    margin-top: 1rem;
+  }
+
+  #fullReportCard .student-result-result-container .student-result-total-marks {
+    margin-top: 0;
+    align-items: center;
+    padding-top: 10px;
+    background-color: #f1f3f5;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+  }
+
+  #fullReportCard .student-result-result-container .student-result-footer-DOG {
+    margin-top: 0.5rem !important;
+  }
+
+  .student-result-close-preview {
+    position: fixed;
+    top: 15px;
+    right: 25px;
+    font-size: 2rem;
+    cursor: pointer;
+    z-index: 10000;
+    display: none;
+  }
+
+  .student-result-close-preview.show {
+    display: block;
+    font-size: 50px;
+    transition: transform 0.3s;
+  }
+
+  .student-result-close-preview:hover {
+    transform: scale(1.1);
+    font-weight: bolder;
   }
 </style>
 
-<div class="result-container">
-  {% if Data and Data.0 %}
-  <div class="info-header">
-    <div class="info-box">
-      <h5>Student Details</h5>
-      <p>
-        <strong>Student ID:</strong> {{ Data.0.student.student_id.student_id }}
-      </p>
-      <p><strong>Name:</strong> {{ Data.0.student.name }}</p>
-      <p>
-        <strong>Department:</strong> {{ Data.0.student.department.department }}
-      </p>
-    </div>
-    <div class="info-box">
-      <h5>General Info</h5>
-      <p><strong>Age:</strong> {{ Data.0.student.age }}</p>
-      <p><strong>Email:</strong> {{ Data.0.student.email }}</p>
-      <p><strong>Address:</strong> {{ Data.0.student.address }}</p>
-    </div>
-  </div>
+<div class="student-result-result">
+  <h1>Student Report Card</h1>
+  <div class="student-result-result-box">
+    <div id="smallReportCard">
+      <div class="student-result-result-container">
+        {% if Data and Data.0 %}
+        <div class="student-result-info-header">
+          <div class="student-result-info-box">
+            <h5>Student Details</h5>
+            <p><strong>Student ID:</strong> {{Data.0.student.student_id.student_id }}</p>
+            <p><strong>Name:</strong> {{ Data.0.student.name }}</p>
+            <p><strong>Department:</strong> {{ Data.0.student.department.department }}</p>
+          </div>
+          <div class="student-result-info-box">
+            <h5>General Info</h5>
+            <p><strong>Age:</strong> {{ Data.0.student.age }}</p>
+            <p><strong>Email:</strong> {{ Data.0.student.email }}</p>
+            <p><strong>Address:</strong> {{ Data.0.student.address }}</p>
+          </div>
+        </div>
 
-  <div class="marks-table">
-    <table>
-      <thead>
-        <tr>
-          <th style="width: 10%">ID</th>
-          <th>Subject</th>
-          <th style="width: 25%">Marks</th>
-          <th style="width: 10%;">Result</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for item in Data %}
-        <tr>
-          <td>{{ forloop.counter }}</td>
-          <td>{{ item.subject.subject_name }}</td>
-          <td>{{ item.marks }}</td>
-          <td>
-            {% if item.marks >= 33 %}
-            <span class="text-success">Pass</span>
-            {% else %}
-            <span class="text-danger">Fail</span>
-            {% endif %}
-          </td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
+        <div class="student-result-marks-table">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Subject</th>
+                <th>Marks</th>
+                <th>Result</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for item in Data %}
+              <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ item.subject.subject_name }}</td>
+                <td>{{ item.marks }}</td>
+                <td>
+                  {% if item.marks >= 33 %}
+                  <span class="text-success">Pass</span>
+                  {% else %}
+                  <span class="text-danger">Fail</span>
+                  {% endif %}
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
 
-  <div class="total-marks">
-    <p>Rank: {{Data.first.student.studentreportcard.first.student_rank}}</p>
-    <p>Total Marks: {{ total_marks.total_marks }}</p>
+        <div class="student-result-total-marks">
+          <p>Rank: {{Data.first.student.studentreportcard.first.student_rank}}</p>
+          {% widthratio total_marks.total_marks 800 100 as percentage %}
+          <p>Total Marks: {{ total_marks.total_marks }} <i>({{ percentage }}%)</i></p>
+        </div>
+
+        <div class="student-result-footer-DOG">
+          <p>Date of generation: <i>{{ Data.first.student.studentreportcard.first.date_report_generation }}</i></p>
+          <p>Percentile: <i>{{ percentile }}</i></p>
+        </div>
+        {% else %}
+        <div class="alert alert-warning text-center">No result data found for this student.</div>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="student-result-box-actions">
+      <button class="btn btn-primary" onclick="openFullReport()">Preview</button>
+      <button class="btn btn-success">Send Email</button>
+    </div>
   </div>
-  <div class="footer-DOG">
-    <p>Date of generation: <i>{{Data.first.student.studentreportcard.first.date_report_generation}}</i></p>
-  </div>
-  {% else %}
-  <div class="alert alert-warning text-center">
-    No result data found for this student.
-  </div>
-  {% endif %}
 </div>
 
+<div id="fullReportCard">
+  <div class="student-result-result-container">
+    {% if Data and Data.0 %}
+    <div class="student-result-info-header">
+      <div class="student-result-info-box">
+        <h5>Student Details</h5>
+        <p><strong>Student ID:</strong> {{ Data.0.student.student_id.student_id }}</p>
+        <p><strong>Name:</strong> {{ Data.0.student.name }}</p>
+        <p><strong>Department:</strong> {{ Data.0.student.department.department }}</p>
+      </div>
+      <div class="student-result-info-box">
+        <h5>General Info</h5>
+        <p><strong>Age:</strong> {{ Data.0.student.age }}</p>
+        <p><strong>Email:</strong> {{ Data.0.student.email }}</p>
+        <p><strong>Address:</strong> {{ Data.0.student.address }}</p>
+      </div>
+    </div>
+
+    <div class="student-result-marks-table">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Subject</th>
+            <th>Marks</th>
+            <th>Result</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in Data %}
+          <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ item.subject.subject_name }}</td>
+            <td>{{ item.marks }}</td>
+            <td>
+              {% if item.marks >= 33 %}
+              <span class="text-success">Pass</span>
+              {% else %}
+              <span class="text-danger">Fail</span>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="student-result-total-marks">
+      <p>Rank: <b>{{ Data.first.student.studentreportcard.first.student_rank}}</b></p>
+      {% widthratio total_marks.total_marks 800 100 as percentage %}
+      <p>Total Marks: <b>{{ total_marks.total_marks }} <i>({{ percentage }}%)</i></b></p>
+    </div>
+
+    <div class="student-result-footer-DOG">
+      <p>Date of generation: <b><i>{{ Data.first.student.studentreportcard.first.date_report_generation }}</i></b></p>
+      <p>Percentile: <b><i>{{ percentile }}</i></b></p>
+    </div>
+    {% else %}
+    <div class="alert alert-warning text-center">No result data found for this student.</div>
+    {% endif %}
+  </div>
+</div>
+
+<div id="closeBtn" class="student-result-close-preview" onclick="closeFullReport()">×</div>
+
+<script>
+  function openFullReport() {
+    document.getElementById("smallReportCard").style.display = "none";
+    document.getElementById("fullReportCard").classList.add("show");
+    document.getElementById("closeBtn").classList.add("show");
+  }
+
+  function closeFullReport() {
+    document.getElementById("smallReportCard").style.display = "block";
+    document.getElementById("fullReportCard").classList.remove("show");
+    document.getElementById("closeBtn").classList.remove("show");
+  }
+</script>
 {% endblock %}

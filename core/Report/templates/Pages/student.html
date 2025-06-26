@@ -47,7 +47,7 @@
 
   tbody::-webkit-scrollbar-thumb {
     background-color: #ccc;
-    border-radius: 8px;
+    border-radius: 10px;
   }
 
   tbody tr {
@@ -70,22 +70,6 @@
     top: 0;
     color: #495057 !important;
     z-index: 1;
-  }
-
-  thead th:first-child {
-    border-top-left-radius: 12px;
-  }
-
-  thead th:last-child {
-    border-top-right-radius: 12px;
-  }
-
-  tbody tr:last-child td:first-child {
-    border-bottom-left-radius: 12px;
-  }
-
-  tbody tr:last-child td:last-child {
-    border-bottom-right-radius: 12px;
   }
 
   td.address span.show-more-btn {
@@ -244,9 +228,8 @@
     font-weight: bold;
   }
 </style>
-
+{% csrf_token %}
 <div class="container">
-  {% csrf_token %}
   <div class="table-container">
     <form action="" method="get" class="search-form mb-4">
       <input type="hidden" name="sort" value="{{ request.GET.sort }}" />

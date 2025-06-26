@@ -1,3 +1,4 @@
 Django
 faker
 python-decouple
+xhtml2pdf

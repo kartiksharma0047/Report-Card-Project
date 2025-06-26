@@ -77,6 +77,37 @@ from .seed import generate_report_card
 def showResult(request,student_id):
     # Don't use this function use it once you have to seed the report card data
     # generate_report_card()
-    querySet= SubjectMarks.objects.filter(student__student_id__student_id=student_id)
-    total_marks = querySet.aggregate(total_marks=Sum('marks'))
-    return render(request,"./Pages/student_Result.html",context={"Data":querySet,"total_marks":total_marks})
+    querySet = SubjectMarks.objects.filter(student__student_id__student_id=student_id)
+    total_marks = querySet.aggregate(total_marks=Sum('marks')) or {'total_marks': 0}
+    if not querySet.exists():
+        return render(request, "./Pages/student_Result.html", context={"Data": [], "total_marks": 0, "percentile": 0})
+    current_student = querySet.first().student
+
+    all_students = Student.objects.all()
+    marks_with_totals = []
+
+    for student in all_students:
+        total = SubjectMarks.objects.filter(student=student).aggregate(tm=Sum('marks'))['tm'] or 0
+        marks_with_totals.append((student.id, total))
+
+    # Sort students by total marks (descending)
+    marks_with_totals.sort(key=lambda x: x[1], reverse=True)
+
+    # Create a map of student_id -> rank
+    rank_map = {student_id: idx + 1 for idx, (student_id, _) in enumerate(marks_with_totals)}
+
+    # Get current student's rank
+    rank = rank_map.get(current_student.id, len(all_students))
+
+    # Calculate percentile on scale of 10
+    percentile = round((rank / len(all_students)) * 10, 1)
+
+    return render(
+        request,
+        "./Pages/student_Result.html",
+        context={
+            "Data": querySet,
+            "total_marks": total_marks,
+            "percentile": percentile
+        }
+    )

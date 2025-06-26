@@ -1,0 +1,188 @@
+{% extends "base.html" %} {% block start %}
+
+<style>
+  .result-container {
+    width: 80%;
+    margin: 2rem auto;
+    background-color: #fff;
+    border-radius: 16px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+    padding: 2rem;
+  }
+
+  .info-header {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+  }
+
+  .info-box {
+    width: 40%;
+  }
+
+  .info-box h5 {
+    font-size: 1.2rem;
+    color: #495057;
+    margin-bottom: 0.8rem;
+    border-bottom: 2px solid #dee2e6;
+    padding-bottom: 0.4rem;
+  }
+
+  .info-box p {
+    margin: 0.3rem 0;
+    font-size: 0.95rem;
+    color: #555;
+  }
+
+  .marks-table {
+    margin-top: 1rem;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  thead {
+    background-color: #e9f5ff;
+  }
+
+  thead th {
+    padding: 0.75rem;
+    text-align: left;
+    font-weight: 600;
+    color: #333;
+    border-bottom: 2px solid #dee2e6;
+  }
+
+  tbody td {
+    padding: 0.45rem 0.75rem;
+    border: 1px solid #e0e0e0;
+    font-size: 0.95rem;
+    background-color: white;
+    color: #444;
+  }
+
+  .total-marks {
+    text-align: right;
+    margin-top: 0rem;
+    color: #212529;
+    background-color: #f1f3f5;
+    padding: 0.5rem 4rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 0 0 12px 12px;
+  }
+  .total-marks p {
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin: 0;
+    padding: 0;
+  }
+  .footer-DOG {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1rem 0 0;
+  }
+  .footer-DOG p {
+    margin: 0;
+    padding: 10px 0 0 0;
+    font-size: 12px;
+  }
+  .footer-DOG p:nth-child(2) i{
+    font-weight: bold;
+    font-size: 15px;
+  }
+  .total-marks i{
+    font-size: 13px;
+  }
+
+  @media screen and (max-width: 768px) {
+    .info-box {
+      width: 100%;
+      margin-bottom: 1rem;
+    }
+    .total-marks {
+      text-align: center;
+    }
+  }
+</style>
+
+<div class="result-container">
+  {% if Data and Data.0 %}
+  <div class="info-header">
+    <div class="info-box">
+      <h5>Student Details</h5>
+      <p>
+        <strong>Student ID:</strong> {{ Data.0.student.student_id.student_id }}
+      </p>
+      <p><strong>Name:</strong> {{ Data.0.student.name }}</p>
+      <p>
+        <strong>Department:</strong> {{ Data.0.student.department.department }}
+      </p>
+    </div>
+    <div class="info-box">
+      <h5>General Info</h5>
+      <p><strong>Age:</strong> {{ Data.0.student.age }}</p>
+      <p><strong>Email:</strong> {{ Data.0.student.email }}</p>
+      <p><strong>Address:</strong> {{ Data.0.student.address }}</p>
+    </div>
+  </div>
+
+  <div class="marks-table">
+    <table>
+      <thead>
+        <tr>
+          <th style="width: 10%">ID</th>
+          <th>Subject</th>
+          <th style="width: 25%">Marks</th>
+          <th style="width: 10%">Result</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in Data %}
+        <tr>
+          <td>{{ forloop.counter }}</td>
+          <td>{{ item.subject.subject_name }}</td>
+          <td>{{ item.marks }}</td>
+          <td>
+            {% if item.marks >= 33 %}
+            <span class="text-success">Pass</span>
+            {% else %}
+            <span class="text-danger">Fail</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="total-marks">
+    <p>Rank: {{Data.first.student.studentreportcard.first.student_rank}}</p>
+    {% widthratio total_marks.total_marks 800 100 as percentage %}
+    <p>Total Marks: {{ total_marks.total_marks }}<i>&nbsp;({{ percentage }}%)</i></p>
+  </div>
+  <div class="footer-DOG">
+    <p>
+      Date of generation:
+      <i>{{ Data.first.student.studentreportcard.first.date_report_generation}}</i>
+    </p>
+    <p>Percentile: <i>{{ percentile }}</i></p>
+  </div>
+
+  {% else %}
+  <div class="alert alert-warning text-center">
+    No result data found for this student.
+  </div>
+  {% endif %}
+</div>
+
+{% endblock %}
