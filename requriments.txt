@@ -1,4 +1,5 @@
-Django
+Django>=3.2,<5.0
 faker
 python-decouple
 xhtml2pdf
+gunicorn
