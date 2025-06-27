@@ -1,11 +1,14 @@
 from django.shortcuts import render
 from Report.models import *
-from django.db.models import Q 
 from django.core.paginator import Paginator
 from django.db.models import Sum
 # Create your views here.
-from django.db.models import Q, OuterRef, Subquery, IntegerField
+from django.db.models import OuterRef, Subquery, IntegerField
 from django.db.models.functions import Coalesce
+from django.contrib import messages
+from django.shortcuts import redirect
+from .utils import render_pdf_from_template, send_email_with_pdf
+
 
 def get_students(request):
     querySet = Student.objects.all()
@@ -101,6 +104,9 @@ def showResult(request,student_id):
 
     # Calculate percentile on scale of 10
     percentile = round((rank / len(all_students)) * 10, 1)
+    
+    if request.GET.get('email_sent') == '1':
+        messages.success(request, "Email sent successfully!")
 
     return render(
         request,
@@ -111,3 +117,38 @@ def showResult(request,student_id):
             "percentile": percentile
         }
     )
+    
+def email_report(request, student_id):
+    # Get the student
+    try:
+        student = Student.objects.get(student_id__student_id=student_id)
+    except Student.DoesNotExist:
+        return render(request, 'Pages/error.html', {'message': 'Student not found.'})
+
+    # Prepare data for PDF
+    querySet = SubjectMarks.objects.filter(student=student)
+    total_marks = querySet.aggregate(total_marks=Sum('marks')) or {'total_marks': 0}
+    all_students = Student.objects.all()
+
+    marks_with_totals = [(stu.id, SubjectMarks.objects.filter(student=stu).aggregate(tm=Sum('marks'))['tm'] or 0) for stu in all_students]
+    marks_with_totals.sort(key=lambda x: x[1], reverse=True)
+    rank_map = {sid: idx + 1 for idx, (sid, _) in enumerate(marks_with_totals)}
+    rank = rank_map.get(student.id, len(all_students))
+    percentile = round((rank / len(all_students)) * 10, 1)
+
+    context = {
+        "Data": querySet,
+        "total_marks": total_marks,
+        "percentile": percentile,
+    }
+
+    # Render PDF and send email
+    filename = f"{student.name.replace(' ', '_')}_ReportCard.pdf"
+    pdf_path = render_pdf_from_template('Pages/result_template.html', context, filename)
+    if pdf_path:
+        send_email_with_pdf(student, pdf_path)
+        student.is_email_sent = True
+        student.save()
+
+    # Redirect to showResult with a flag
+    return redirect(f'/result/{student.student_id.student_id}/?email_sent=1')

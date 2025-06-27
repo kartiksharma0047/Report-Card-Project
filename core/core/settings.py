@@ -132,3 +132,4 @@ EMAIL_USE_TLS = True
 
 EMAIL_HOST_USER = config('EMAIL')
 EMAIL_HOST_PASSWORD = config('EMAIL_PASSWORD')
+# kartik_django.test0047

@@ -1,20 +1,43 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <style>
-    body { font-family: Arial, sans-serif; }
-    .container {
-      background-color: #f9f9f9;
-      padding: 20px;
-      border-radius: 10px;
-    }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <h2>Hello {{ student.name }},</h2>
-    <p>Attached is your report card.</p>
-    <p>Thank you,<br/>ZeroBills Education</p>
-  </div>
-</body>
+  <body
+    style="
+      font-family: Arial, sans-serif;
+      background-color: #f2f4f6;
+      padding: 30px;
+    "
+  >
+    <table
+      width="100%"
+      cellpadding="0"
+      cellspacing="0"
+      border="0"
+      style="
+        max-width: 600px;
+        margin: auto;
+        background-color: #ffffff;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+      "
+    >
+      <tr>
+        <td style="padding: 30px">
+          <h2 style="color: #333333; font-size: 24px; margin-bottom: 20px">
+            Hello {{ student.name }},
+          </h2>
+          <p style="font-size: 16px; color: #555555; line-height: 1.6">
+            We hope you're doing well!<br /><br />
+            Please find your report card attached with this email.
+          </p>
+
+          <p style="font-size: 16px; color: #555555; margin-top: 30px">
+            Best regards,<br />
+            <strong>Academic Office</strong><br />
+            <span style="font-size: 13px; color: #999">XYZ University</span>
+          </p>
+        </td>
+      </tr>
+    </table>
+  </body>
 </html>
