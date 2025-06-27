@@ -1,20 +1,17 @@
-# Python
+# Bytecode & cache
 __pycache__/
 *.py[cod]
-*.sqlite3
 *.log
+*.sqlite3
 
-# Virtual environment
+# Environment
 venv/
-/Report Card Django/core/.env
+*.env
 
-# Django secret key or settings
- 
-
-# VS Code, JetBrains, etc.
+# Editors
 .vscode/
 .idea/
 
-# OS
+# OS junk
 .DS_Store
 Thumbs.db
