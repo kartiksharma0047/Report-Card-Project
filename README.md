@@ -87,7 +87,3 @@ python manage.py runserver
 ```bash
 http://127.0.0.1:8000
 ```
-
-# 🌐 Production Deployment
-
-This project uses Gunicorn and Whitenoise for serving in production and is ready to deploy on Render.
